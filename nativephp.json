@@ -1,0 +1,37 @@
+{
+    "namespace": "Dialog",
+
+    "bridge_functions": [
+        {
+            "name": "Dialog.Alert",
+            "android": "com.nativephp.dialog.DialogFunctions.Alert",
+            "ios": "DialogFunctions.Alert",
+            "description": "Show a native alert dialog with custom buttons"
+        },
+        {
+            "name": "Dialog.Toast",
+            "android": "com.nativephp.dialog.DialogFunctions.Toast",
+            "ios": "DialogFunctions.Toast",
+            "description": "Show a toast notification"
+        }
+    ],
+
+    "android": {
+        "permissions": [],
+        "dependencies": {
+            "implementation": []
+        }
+    },
+
+    "ios": {
+        "info_plist": {},
+        "dependencies": {
+            "swift_packages": [],
+            "pods": []
+        }
+    },
+
+    "events": [
+        "Native\\Mobile\\Events\\Alert\\ButtonPressed"
+    ]
+}
