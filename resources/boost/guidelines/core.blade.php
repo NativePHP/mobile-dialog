@@ -2,32 +2,18 @@
 
 Native alert dialogs and toast notifications for NativePHP Mobile applications.
 
-### Installation
-
-```bash
-composer require nativephp/dialog
-php artisan native:plugin:register nativephp/dialog
-```
-
 ### PHP Usage (Livewire/Blade)
-
-Use the `Dialog` facade:
 
 @verbatim
 <code-snippet name="Alert Dialogs" lang="php">
 use Native\Mobile\Facades\Dialog;
 
-// Simple alert
-Dialog::alert('Hello', 'Welcome to our app!');
-
-// Alert with custom buttons
-Dialog::alert('Confirm', 'Are you sure?', ['Cancel', 'Delete'])
-    ->id('delete-confirm')
-    ->show();
-
-// With custom event class
-Dialog::alert('Title', 'Message')
-    ->event(MyCustomEvent::class);
+// Simple alert with custom buttons (max 3)
+Dialog::alert(
+    'Confirm Action',
+    'Are you sure you want to delete this item?',
+    ['Cancel', 'Delete']
+);
 </code-snippet>
 @endverbatim
 
@@ -35,86 +21,92 @@ Dialog::alert('Title', 'Message')
 <code-snippet name="Toast Notifications" lang="php">
 use Native\Mobile\Facades\Dialog;
 
-// Short toast (2 seconds)
-Dialog::toast('Item saved!', 'short');
+// Display a brief toast notification
+Dialog::toast('Item saved successfully!');
+</code-snippet>
+@endverbatim
 
-// Long toast (4 seconds) - default
-Dialog::toast('Processing complete');
+### JavaScript Usage (Vue/React/Inertia)
+
+@verbatim
+<code-snippet name="Dialogs in JavaScript" lang="javascript">
+import { dialog, on, off, Events } from '#nativephp';
+
+// Simple alert
+await dialog.alert('Confirm Action', 'Are you sure?', ['Cancel', 'Delete']);
+
+// Fluent builder API
+await dialog.alert()
+    .title('Confirm Action')
+    .message('Are you sure you want to delete this item?')
+    .buttons(['Cancel', 'Delete']);
+
+// Quick confirm dialog
+await dialog.alert().confirm('Confirm Action', 'Are you sure?');
+
+// Toast notification
+await dialog.toast('Item saved successfully!');
 </code-snippet>
 @endverbatim
 
 ### Handling Alert Events
 
+#### PHP
+
 @verbatim
-<code-snippet name="Listening for Button Press" lang="php">
+<code-snippet name="Button Press Events" lang="php">
 use Native\Mobile\Attributes\OnNative;
 use Native\Mobile\Events\Alert\ButtonPressed;
 
 #[OnNative(ButtonPressed::class)]
-public function handleButton($index, $label, $id = null)
+public function handleAlertButton($index, $label)
 {
-    if ($id === 'delete-confirm' && $label === 'Delete') {
-        $this->deleteItem();
+    switch ($index) {
+        case 0:
+            Dialog::toast("You pressed '{$label}'");
+            break;
+        case 1:
+            $this->performAction();
+            Dialog::toast("You pressed '{$label}'");
+            break;
     }
 }
 </code-snippet>
 @endverbatim
 
-### JavaScript Usage
+#### Vue
 
 @verbatim
-<code-snippet name="Dialogs in JavaScript" lang="js">
+<code-snippet name="Button Press Events in Vue" lang="javascript">
 import { dialog, on, off, Events } from '#nativephp';
+import { onMounted, onUnmounted } from 'vue';
 
-// Simple alert
-await dialog.alert('Hello', 'Welcome to our app!');
-
-// Alert with custom buttons
-await dialog.alert('Confirm', 'Are you sure?', ['Cancel', 'Delete'])
-    .id('delete-confirm');
-
-// Toast notifications
-dialog.toast('Item saved!', 'short');
-dialog.toast('Processing complete');
-
-// Listen for button press
-const handleButton = (payload) => {
-    const { index, label, id } = payload;
-    if (id === 'delete-confirm' && label === 'Delete') {
-        deleteItem();
+const handleButtonPressed = (payload) => {
+    const { index, label } = payload;
+    if (index === 1) {
+        performAction();
     }
+    dialog.toast(`You pressed '${label}'`);
 };
 
-on(Events.Alert.ButtonPressed, handleButton);
+onMounted(() => {
+    on(Events.Alert.ButtonPressed, handleButtonPressed);
+});
+
+onUnmounted(() => {
+    off(Events.Alert.ButtonPressed, handleButtonPressed);
+});
 </code-snippet>
 @endverbatim
 
-### Available Methods
+### Button Positioning
 
-#### Alert Methods
-
-- `Dialog::alert(string $title, string $message, array $buttons = ['OK'])` - Show alert dialog
-- `->id(string $id)` - Set unique identifier for tracking
-- `->event(string $class)` - Set custom event class
-- `->remember()` - Store ID in session for retrieval
-- `->show()` - Explicitly display the alert
-
-#### Toast Methods
-
-- `Dialog::toast(string $message, string $duration = 'long')` - Show toast notification
-  - `'short'` - 2 seconds
-  - `'long'` - 4 seconds (default)
+- 1 button: Positive (OK/Confirm)
+- 2 buttons: Negative (Cancel) + Positive (OK/Confirm)
+- 3 buttons: Negative (Cancel) + Neutral (Maybe) + Positive (OK/Confirm)
 
 ### Events
 
 - `Native\Mobile\Events\Alert\ButtonPressed` - Fired when alert button is tapped
   - `int $index` - Button index (0-based)
   - `string $label` - Button label text
-  - `string|null $id` - Alert ID if set
-
-### Platform Details
-
-- **Android Alerts**: Native `AlertDialog` via `NativeActionCoordinator`
-- **iOS Alerts**: Native `UIAlertController` with `.alert` style
-- **Android Toasts**: Material Design `Snackbar` (positioned above bottom navigation)
-- **iOS Toasts**: Custom `ToastManager` overlay
