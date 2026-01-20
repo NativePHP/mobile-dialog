@@ -193,7 +193,3 @@ onUnmounted(() => off(Events.Alert.ButtonPressed, handleButton));
 ### Toast Notifications
 - **Android:** Material Design `Snackbar` (positioned above bottom navigation)
 - **iOS:** Custom `ToastManager` overlay
-
-## License
-
-MIT
