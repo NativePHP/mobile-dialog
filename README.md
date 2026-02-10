@@ -43,13 +43,13 @@ public function handleButton($index, $label, $id = null)
 #### JavaScript (Vue/React/Inertia)
 
 ```js
-import { dialog, on, off, Events } from '#nativephp';
+import { Dialog, On, Off, Events } from '#nativephp';
 
 // Simple alert
-await dialog.alert('Hello', 'Welcome to our app!');
+await Dialog.alert('Hello', 'Welcome to our app!');
 
 // Alert with custom buttons
-await dialog.alert('Confirm', 'Are you sure?', ['Cancel', 'Delete'])
+await Dialog.alert('Confirm', 'Are you sure?', ['Cancel', 'Delete'])
     .id('delete-confirm');
 
 // Listen for button press
@@ -60,7 +60,7 @@ const handleButton = (payload) => {
     }
 };
 
-on(Events.Alert.ButtonPressed, handleButton);
+On(Events.Alert.ButtonPressed, handleButton);
 ```
 
 ### Toast Notifications
@@ -80,13 +80,13 @@ Dialog::toast('Processing complete');
 #### JavaScript
 
 ```js
-import { dialog } from '#nativephp';
+import { Dialog } from '#nativephp';
 
 // Short toast
-dialog.toast('Item saved!', 'short');
+Dialog.toast('Item saved!', 'short');
 
 // Long toast (default)
-dialog.toast('Processing complete');
+Dialog.toast('Processing complete');
 ```
 
 ## Configuration Methods
@@ -170,7 +170,7 @@ public function handleButton($index, $label, $id = null)
 #### Vue
 
 ```js
-import { on, off, Events } from '#nativephp';
+import { On, Off, Events } from '#nativephp';
 import { onMounted, onUnmounted } from 'vue';
 
 const handleButton = (payload) => {
@@ -180,8 +180,8 @@ const handleButton = (payload) => {
     }
 };
 
-onMounted(() => on(Events.Alert.ButtonPressed, handleButton));
-onUnmounted(() => off(Events.Alert.ButtonPressed, handleButton));
+onMounted(() => On(Events.Alert.ButtonPressed, handleButton));
+onUnmounted(() => Off(Events.Alert.ButtonPressed, handleButton));
 ```
 
 ## Platform Behavior
