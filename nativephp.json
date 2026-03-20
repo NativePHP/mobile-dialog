@@ -1,6 +1,5 @@
 {
     "namespace": "Dialog",
-
     "bridge_functions": [
         {
             "name": "Dialog.Alert",
@@ -15,15 +14,13 @@
             "description": "Show a toast notification"
         }
     ],
-
     "android": {
-        "min_version": 33,
+        "min_version": 26,
         "permissions": [],
         "dependencies": {
             "implementation": []
         }
     },
-
     "ios": {
         "min_version": "18.2",
         "info_plist": {},
@@ -32,7 +29,6 @@
             "pods": []
         }
     },
-
     "events": [
         "Native\\Mobile\\Events\\Alert\\ButtonPressed"
     ]
