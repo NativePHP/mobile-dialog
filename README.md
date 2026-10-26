@@ -111,6 +111,17 @@ Dialog::alert('Title', 'Message')
     ->event(MyCustomEvent::class);
 ```
 
+On nativephp/mobile 4.6.1 and later (3.3.11 and later on 3.x), your event class must implement `Native\Mobile\Events\Contracts\DispatchableFromNative`. Core refuses any other class sent back from native, so the event would never fire. Extending the default `ButtonPressed` event also works, since it already implements the interface.
+
+```php
+use Native\Mobile\Events\Contracts\DispatchableFromNative;
+
+class MyCustomEvent implements DispatchableFromNative
+{
+    // ...
+}
+```
+
 #### `remember()`
 
 Store the alert ID in session for retrieval in event handlers.
